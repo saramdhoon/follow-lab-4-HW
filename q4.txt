@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+#include "fields.h"
+#include "dllist.h"
+
+typedef struct {
+  char *fname;
+  char *lname;
+  double score;
+} Person;
+
+/* Insert the new person into the list while maintaining a sorted order.
+ * we need to traverse through the list until we find a node whose score
+ * is greater than the score of the inserted person. We then need to
+ * insert the new node *before* the node at which we stopped. Doubly
+ * linked lists easily support this operation while singly linked lists
+ * do not. 
+ * 
+ */
+void insert_person(Person *p, Dllist *student_list) {
+  Dllist_Node *current_node;
+  Person *current_person;
+
+  for (current_node = dll_first(student_list); 
+        current_node != dll_sentinel(student_list);
+	current_node = dll_next(current_node)) {
+    current_person = (Person *)dll_val(current_node);
+    if (p->score < current_person->score)
+      break;
+  }
+  dll_insert_before(current_node, p);
+}
